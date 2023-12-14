@@ -102,12 +102,12 @@ fn dup_1() {
     reassembler.push_str(0, "abcd", false, &mut buf);
     assert_eq!(buf.pushed(), 4);
     assert_eq!(buf.read_all(), "abcd");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 
     reassembler.push_str(0, "abcd", false, &mut buf);
     assert_eq!(buf.pushed(), 4);
     assert_eq!(buf.read_all(), "");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 }
 
 #[test]
@@ -117,22 +117,22 @@ fn dup_2() {
     reassembler.push_str(0, "abcd", false, &mut buf);
     assert_eq!(buf.pushed(), 4);
     assert_eq!(buf.read_all(), "abcd");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 
     reassembler.push_str(4, "abcd", false, &mut buf);
     assert_eq!(buf.pushed(), 8);
     assert_eq!(buf.read_all(), "abcd");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 
     reassembler.push_str(0, "abcd", false, &mut buf);
     assert_eq!(buf.pushed(), 8);
     assert_eq!(buf.read_all(), "");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 
     reassembler.push_str(4, "abcd", false, &mut buf);
     assert_eq!(buf.pushed(), 8);
     assert_eq!(buf.read_all(), "");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 }
 
 #[test]
@@ -145,7 +145,7 @@ fn dup_3() {
     reassembler.push_str(0, data, false, &mut buf);
     assert_eq!(buf.pushed(), 8);
     assert_eq!(buf.read_all(), "abcdefgh");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 
     for _ in 0..1000 {
         let start_i: usize = rng.gen_range(0..9);
@@ -154,7 +154,7 @@ fn dup_3() {
         reassembler.push_str(start_i, sub_data, false, &mut buf);
         assert_eq!(buf.pushed(), 8);
         assert_eq!(buf.read_all(), "");
-        assert_eq!(buf.finished(), false);
+        assert!(!buf.finished());
     }
 }
 
@@ -165,12 +165,12 @@ fn dup_4() {
     reassembler.push_str(0, "abcd", false, &mut buf);
     assert_eq!(buf.pushed(), 4);
     assert_eq!(buf.read_all(), "abcd");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 
     reassembler.push_str(0, "abcdef", false, &mut buf);
     assert_eq!(buf.pushed(), 6);
     assert_eq!(buf.read_all(), "ef");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 }
 #[test]
 fn holes_1() {
@@ -179,7 +179,7 @@ fn holes_1() {
     reassembler.push_str(1, "b", false, &mut buf);
     assert_eq!(buf.pushed(), 0);
     assert_eq!(buf.read_all(), "");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 }
 
 #[test]
@@ -190,7 +190,7 @@ fn holes_2() {
     reassembler.push_str(0, "a", false, &mut buf);
     assert_eq!(buf.pushed(), 2);
     assert_eq!(buf.read_all(), "ab");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 }
 
 #[test]
@@ -200,11 +200,11 @@ fn holes_3() {
     reassembler.push_str(1, "b", true, &mut buf);
     assert_eq!(buf.pushed(), 0);
     assert_eq!(buf.read_all(), "");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
     reassembler.push_str(0, "a", false, &mut buf);
     assert_eq!(buf.pushed(), 2);
     assert_eq!(buf.read_all(), "ab");
-    assert_eq!(buf.finished(), true);
+    assert!(buf.finished());
 }
 
 #[test]
@@ -215,7 +215,7 @@ fn holes_4() {
     reassembler.push_str(0, "ab", false, &mut buf);
     assert_eq!(buf.pushed(), 2);
     assert_eq!(buf.read_all(), "ab");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 }
 
 #[test]
@@ -225,22 +225,22 @@ fn holes_5() {
     reassembler.push_str(1, "b", false, &mut buf);
     assert_eq!(buf.pushed(), 0);
     assert_eq!(buf.read_all(), "");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 
     reassembler.push_str(3, "d", false, &mut buf);
     assert_eq!(buf.pushed(), 0);
     assert_eq!(buf.read_all(), "");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 
     reassembler.push_str(2, "c", false, &mut buf);
     assert_eq!(buf.pushed(), 0);
     assert_eq!(buf.read_all(), "");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 
     reassembler.push_str(0, "a", false, &mut buf);
     assert_eq!(buf.pushed(), 4);
     assert_eq!(buf.read_all(), "abcd");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 }
 
 #[test]
@@ -250,17 +250,17 @@ fn holes_6() {
     reassembler.push_str(1, "b", false, &mut buf);
     assert_eq!(buf.pushed(), 0);
     assert_eq!(buf.read_all(), "");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 
     reassembler.push_str(3, "d", false, &mut buf);
     assert_eq!(buf.pushed(), 0);
     assert_eq!(buf.read_all(), "");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 
     reassembler.push_str(0, "abc", false, &mut buf);
     assert_eq!(buf.pushed(), 4);
     assert_eq!(buf.read_all(), "abcd");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 }
 
 #[test]
@@ -270,27 +270,27 @@ fn holes_7() {
     reassembler.push_str(1, "b", false, &mut buf);
     assert_eq!(buf.pushed(), 0);
     assert_eq!(buf.read_all(), "");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 
     reassembler.push_str(3, "d", false, &mut buf);
     assert_eq!(buf.pushed(), 0);
     assert_eq!(buf.read_all(), "");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 
     reassembler.push_str(0, "a", false, &mut buf);
     assert_eq!(buf.pushed(), 2);
     assert_eq!(buf.read_all(), "ab");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 
     reassembler.push_str(2, "c", false, &mut buf);
     assert_eq!(buf.pushed(), 4);
     assert_eq!(buf.read_all(), "cd");
-    assert_eq!(buf.finished(), false);
+    assert!(!buf.finished());
 
     reassembler.push_str(4, "", true, &mut buf);
     assert_eq!(buf.pushed(), 4);
     assert_eq!(buf.read_all(), "");
-    assert_eq!(buf.finished(), true);
+    assert!(buf.finished());
 }
 
 #[test]

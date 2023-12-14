@@ -35,7 +35,7 @@ impl ByteStream {
         let bytes = &buf[0..ac];
         self.pushed += ac;
         self.inner.extend(bytes.iter());
-        return ac;
+        ac
     }
 
     pub fn push_str(&mut self, content: &str) -> usize {
