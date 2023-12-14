@@ -1,8 +1,6 @@
 use std::{
-    fmt::Write as fmtWrite,
-    io::{Read, Write},
-    net::{IpAddr, Ipv4Addr, SocketAddr, TcpStream},
-    path::Path,
+    io::{Write, Read},
+    net::{IpAddr, SocketAddr, TcpStream},
 };
 
 use clap::Parser;
