@@ -8,6 +8,17 @@ pub struct ByteStream {
     pushed: usize,
 }
 
+impl std::io::Write for ByteStream {
+    fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
+        self.push(buf);
+        Ok(buf.len())
+    }
+
+    fn flush(&mut self) -> std::io::Result<()> {
+        Ok(())
+    }
+}
+
 impl ByteStream {
     pub fn new(capacity: usize) -> Self {
         ByteStream {
@@ -19,18 +30,15 @@ impl ByteStream {
         }
     }
 
-    pub fn push(&mut self, buf: &[u8]) {
-        if self.closed() {
-            return;
-        }
-
+    pub fn push(&mut self, buf: &[u8]) -> usize {
         let ac = self.avalible_capacity().min(buf.len());
         let bytes = &buf[0..ac];
         self.pushed += ac;
-        self.inner.extend(bytes.iter())
+        self.inner.extend(bytes.iter());
+        return ac;
     }
 
-    pub fn push_str(&mut self, content: &str) {
+    pub fn push_str(&mut self, content: &str) -> usize {
         self.push(content.as_bytes())
     }
 
@@ -43,7 +51,7 @@ impl ByteStream {
     }
 
     pub fn finished(&self) -> bool {
-        self.empty() && self.closed()
+        self.empty() && self.closed() && self.pushed() != 0
     }
 
     pub fn avalible_capacity(&self) -> usize {
@@ -68,6 +76,18 @@ impl ByteStream {
         }
         self.poped += count;
         self.inner.drain(0..count);
+    }
+
+    pub fn read(&mut self, mut count: usize) -> String {
+        if self.len() < count {
+            count = self.len()
+        }
+        self.poped += count;
+        self.inner.drain(0..count).map(char::from).collect()
+    }
+
+    pub fn read_all(&mut self) -> String {
+        self.read(self.len())
     }
 
     pub fn poped(&self) -> usize {
