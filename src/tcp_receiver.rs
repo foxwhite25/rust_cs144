@@ -5,6 +5,7 @@ use crate::{
     TcpReceiverMessage, TcpSenderMessage,
 };
 
+#[derive(Default)]
 pub struct TcpReceiver {
     isn: Option<RelativeSequence>,
 }

@@ -5,6 +5,7 @@ pub mod reassembler;
 pub mod sequence;
 pub mod tcp_receiver;
 
+#[derive(Default)]
 pub struct TcpSenderMessage {
     seq_no: RelativeSequence,
     syn: bool,
@@ -51,6 +52,7 @@ impl TcpSenderMessage {
     }
 }
 
+#[derive(Default)]
 pub struct TcpReceiverMessage {
     pub ack_no: Option<RelativeSequence>,
     pub window_size: u16,

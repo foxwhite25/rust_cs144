@@ -1,6 +1,6 @@
 use cs144::{
     byte_stream::ByteStream, reassembler::Reassembler, sequence::RelativeSequence,
-    tcp_receiver::TcpReceiver, TcpReceiverMessage, TcpSenderMessage,
+    tcp_receiver::TcpReceiver, TcpSenderMessage,
 };
 use rand::Rng;
 

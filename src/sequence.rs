@@ -17,7 +17,7 @@ impl std::ops::Add for AbsoluteSequence {
     }
 }
 
-#[derive(PartialEq, PartialOrd, Ord, Eq, Debug, Clone, Copy)]
+#[derive(PartialEq, PartialOrd, Ord, Eq, Debug, Clone, Copy, Default)]
 pub struct RelativeSequence(pub u32);
 
 impl AbsoluteSequence {
