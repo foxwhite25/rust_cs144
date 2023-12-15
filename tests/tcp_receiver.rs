@@ -377,7 +377,7 @@ fn transmit_4() {
         let block_size: u32 = rng.gen_range(1..=max_block_size);
         let data: String = (0..block_size)
             .map(|j| {
-                let c = 'a' as u8 + ((bytes_sent + j as u32) % 26) as u8;
+                let c = b'a' + ((bytes_sent + j) % 26) as u8;
                 c as char
             })
             .collect();
@@ -393,7 +393,7 @@ fn transmit_4() {
             .with_str(&data);
         receiver.receive(message, &mut reassembler, &mut writer);
 
-        bytes_sent += block_size as u32;
+        bytes_sent += block_size;
         assert_eq!(writer.read_all(), data);
     }
 }
@@ -417,7 +417,7 @@ fn transmit_5() {
         let block_size: u32 = rng.gen_range(1..=max_block_size as u32);
         let data: String = (0..block_size)
             .map(|j| {
-                let c = 'a' as u8 + ((bytes_sent + j as u32) % 26) as u8;
+                let c = b'a' + ((bytes_sent + j) % 26) as u8;
                 all_data.push(c as char);
                 c as char
             })
@@ -447,18 +447,18 @@ fn segment_before_syn() {
     let mut rng = rand::thread_rng();
 
     let isn = rng.gen::<u32>();
-    assert_eq!(receiver.send(&mut writer).ack_no.is_none(), true);
+    assert!(receiver.send(&mut writer).ack_no.is_none());
     let message = TcpSenderMessage::new().with_seq(isn + 1).with_str("hello");
     receiver.receive(message, &mut reassembler, &mut writer);
-    assert_eq!(receiver.send(&mut writer).ack_no.is_none(), false);
+    assert!(receiver.send(&mut writer).ack_no.is_none());
     assert_eq!(reassembler.pending(), 0);
     assert_eq!(writer.read_all(), "");
     assert_eq!(writer.pushed(), 0);
 
     let message = TcpSenderMessage::new().with_syn().with_seq(isn);
     receiver.receive(message, &mut reassembler, &mut writer);
-    assert_eq!(receiver.send(&mut writer).ack_no.is_none(), true);
-    assert_eq!(writer.closed(), false);
+    assert!(receiver.send(&mut writer).ack_no.is_some());
+    assert!(!writer.closed());
     assert_eq!(
         receiver.send(&mut writer).ack_no,
         Some(RelativeSequence(isn + 1))
@@ -473,7 +473,7 @@ fn segment_with_syn_and_data() {
     let mut rng = rand::thread_rng();
 
     let isn = rng.gen::<u32>();
-    assert_eq!(receiver.send(&mut writer).ack_no.is_none(), true);
+    assert!(receiver.send(&mut writer).ack_no.is_none());
     let message = TcpSenderMessage::new()
         .with_syn()
         .with_seq(isn)
@@ -485,7 +485,7 @@ fn segment_with_syn_and_data() {
     );
     assert_eq!(reassembler.pending(), 0);
     assert_eq!(writer.read_all(), "Hello, CS144!");
-    assert_eq!(writer.closed(), false);
+    assert!(!writer.closed());
 }
 
 #[test]
@@ -496,7 +496,7 @@ fn empty_segment() {
     let mut rng = rand::thread_rng();
 
     let isn = rng.gen::<u32>();
-    assert_eq!(receiver.send(&mut writer).ack_no.is_none(), true);
+    assert!(receiver.send(&mut writer).ack_no.is_none());
     let message = TcpSenderMessage::new().with_syn().with_seq(isn);
     receiver.receive(message, &mut reassembler, &mut writer);
     assert_eq!(
@@ -509,13 +509,13 @@ fn empty_segment() {
     receiver.receive(message, &mut reassembler, &mut writer);
     assert_eq!(reassembler.pending(), 0);
     assert_eq!(writer.pushed(), 0);
-    assert_eq!(writer.closed(), false);
+    assert!(!writer.closed());
 
     let message = TcpSenderMessage::new().with_syn().with_seq(isn + 5);
     receiver.receive(message, &mut reassembler, &mut writer);
     assert_eq!(reassembler.pending(), 0);
     assert_eq!(writer.pushed(), 0);
-    assert_eq!(writer.closed(), false);
+    assert!(!writer.closed());
 }
 
 #[test]
@@ -528,7 +528,7 @@ fn segment_with_null_byte() {
     let isn = rng.gen::<u32>();
     let text = "Here's a null byte:\0and it's gone.";
 
-    assert_eq!(receiver.send(&mut writer).ack_no.is_none(), true);
+    assert!(receiver.send(&mut writer).ack_no.is_none());
     let message = TcpSenderMessage::new().with_syn().with_seq(isn);
     receiver.receive(message, &mut reassembler, &mut writer);
     assert_eq!(reassembler.pending(), 0);
@@ -541,5 +541,5 @@ fn segment_with_null_byte() {
         receiver.send(&mut writer).ack_no,
         Some(RelativeSequence(isn + 35))
     );
-    assert_eq!(writer.closed(), false);
+    assert!(!writer.closed());
 }
