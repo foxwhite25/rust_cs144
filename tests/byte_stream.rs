@@ -6,7 +6,7 @@ fn overwrite() {
     let mut stream = ByteStream::new(2);
     stream.push_str("cat");
     assert_eq!(stream.avalible_capacity(), 0);
-    assert!(!stream.empty());
+    assert!(!stream.is_empty());
     assert!(!stream.finished());
     assert!(!stream.closed());
     assert_eq!(stream.len(), 2);
@@ -14,7 +14,7 @@ fn overwrite() {
 
     stream.push_str("t");
     assert_eq!(stream.avalible_capacity(), 0);
-    assert!(!stream.empty());
+    assert!(!stream.is_empty());
     assert!(!stream.finished());
     assert!(!stream.closed());
     assert_eq!(stream.len(), 2);
@@ -29,7 +29,7 @@ fn clear_overwrite() {
 
     stream.pop(2);
     stream.push_str("tac");
-    assert!(!stream.empty());
+    assert!(!stream.is_empty());
     assert!(!stream.finished());
     assert!(!stream.closed());
     assert_eq!(stream.pushed(), 4);
@@ -47,7 +47,7 @@ fn pop_overwrite() {
 
     stream.pop(1);
     stream.push_str("tac");
-    assert!(!stream.empty());
+    assert!(!stream.is_empty());
     assert!(!stream.finished());
     assert!(!stream.closed());
     assert_eq!(stream.pushed(), 3);

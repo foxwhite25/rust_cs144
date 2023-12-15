@@ -6,8 +6,8 @@ use rand::{
 
 #[test]
 fn wrapping_cmp() {
-    assert_eq!(RelativeSequence(3) != RelativeSequence(1), true);
-    assert_eq!(RelativeSequence(3) == RelativeSequence(1), false);
+    assert!(RelativeSequence(3) != RelativeSequence(1));
+    assert!(RelativeSequence(3) != RelativeSequence(1));
 
     let n_reps = 32768;
     let mut rng = rand::thread_rng();

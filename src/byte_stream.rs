@@ -51,14 +51,14 @@ impl ByteStream {
     }
 
     pub fn finished(&self) -> bool {
-        self.empty() && self.closed() && self.pushed() != 0
+        self.is_empty() && self.closed() && self.pushed() != 0
     }
 
     pub fn avalible_capacity(&self) -> usize {
         self.capacity - self.inner.len()
     }
 
-    pub fn empty(&self) -> bool {
+    pub fn is_empty(&self) -> bool {
         self.inner.is_empty()
     }
 
