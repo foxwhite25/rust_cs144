@@ -1,5 +1,3 @@
-use core::time;
-
 use byte_stream::ByteStream;
 use rand::Rng;
 use sequence::RelativeSequence;
@@ -93,6 +91,12 @@ pub struct TcpConfig {
     recv_capacity: usize,
     send_capacity: usize,
     fixed_isn: Option<RelativeSequence>,
+}
+
+impl Default for TcpConfig {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl TcpConfig {

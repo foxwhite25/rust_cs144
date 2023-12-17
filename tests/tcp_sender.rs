@@ -1,18 +1,10 @@
-use std::u8::MAX;
-
-use clap::builder::ValueParserFactory;
 use cs144::{
     byte_stream::ByteStream,
     sequence::{AbsoluteSequence, RelativeSequence},
     tcp_sender::TcpSender,
-    TcpConfig, TcpReceiverMessage, DEFAULT_CAPACITY, DEFAULT_TIMEOUT_RT, MAX_PAYLOAD_SIZE,
-    MAX_RETRY_ATTEMPT,
+    TcpConfig, TcpReceiverMessage, DEFAULT_TIMEOUT_RT, MAX_PAYLOAD_SIZE, MAX_RETRY_ATTEMPT,
 };
-use rand::{
-    distributions::{Alphanumeric, DistString},
-    rngs::ThreadRng,
-    thread_rng, Rng,
-};
+use rand::{thread_rng, Rng};
 
 const DEFAULT_TEST_WINDOW: u16 = 137;
 
@@ -105,9 +97,8 @@ impl SenderTester {
     fn expect_message(mut self, message: Message) -> Self {
         dbg!(&message);
         dbg!(&self.sender, &self.stream);
-        match (&message.data, message.payload_size) {
-            (Some(msg), Some(payload)) => assert_eq!(msg.len(), payload),
-            _ => {}
+        if let (Some(msg), Some(payload)) = (&message.data, message.payload_size) {
+            assert_eq!(msg.len(), payload)
         };
         let Some(seg) = self.sender.try_send() else {
             panic!("Expect message but none was sent!");

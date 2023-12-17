@@ -1,4 +1,4 @@
-use std::collections::{HashMap, VecDeque};
+
 
 use crate::{
     byte_stream::ByteStream,
@@ -81,7 +81,7 @@ impl TcpSender {
                 message.syn = true;
             }
 
-            let payload_size = (MAX_PAYLOAD_SIZE as usize)
+            let payload_size = MAX_PAYLOAD_SIZE
                 .min(window_size - outstanding_seq - message.syn as usize);
             let payload = reader.read(payload_size);
             let size = payload.len() + outstanding_seq + message.syn as usize;
@@ -91,7 +91,7 @@ impl TcpSender {
                 message.fin = true;
             }
 
-            message.payload = payload.chars().into_iter().map(|x| x as u8).collect();
+            message.payload = payload.chars().map(|x| x as u8).collect();
             if message.sequence_length() == 0 {
                 break;
             }
