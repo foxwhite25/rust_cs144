@@ -1,5 +1,11 @@
-#[derive(PartialEq, PartialOrd, Ord, Eq, Debug, Clone, Copy)]
+#[derive(PartialEq, PartialOrd, Ord, Eq, Debug, Clone, Copy, Hash)]
 pub struct AbsoluteSequence(pub u64);
+
+impl std::ops::SubAssign<u64> for AbsoluteSequence {
+    fn sub_assign(&mut self, rhs: u64) {
+        self.0 -= rhs
+    }
+}
 
 impl std::ops::Sub for AbsoluteSequence {
     type Output = AbsoluteSequence;
@@ -9,11 +15,25 @@ impl std::ops::Sub for AbsoluteSequence {
     }
 }
 
+impl std::ops::AddAssign<u64> for AbsoluteSequence {
+    fn add_assign(&mut self, rhs: u64) {
+        self.0 += rhs
+    }
+}
+
 impl std::ops::Add for AbsoluteSequence {
     type Output = AbsoluteSequence;
 
     fn add(self, rhs: Self) -> Self::Output {
         AbsoluteSequence(self.0 + rhs.0)
+    }
+}
+
+impl std::ops::Add<u64> for AbsoluteSequence {
+    type Output = AbsoluteSequence;
+
+    fn add(self, rhs: u64) -> Self::Output {
+        AbsoluteSequence(self.0 + rhs)
     }
 }
 

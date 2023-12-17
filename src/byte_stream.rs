@@ -1,5 +1,6 @@
 use std::collections::VecDeque;
 
+#[derive(Debug)]
 pub struct ByteStream {
     inner: VecDeque<u8>,
     capacity: usize,
